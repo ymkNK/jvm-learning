@@ -80,6 +80,21 @@ public class HowJvmReflect {
         method.invoke(null, 0);
     }
 
+    /**
+     * Created by ymk.
+     * 考虑到许多反射调用仅会执行一次，Java 虚拟机设置了一个阈值 15（可以通过 -Dsun.reflect.inflationThreshold= 来调整），
+     * 当某个反射调用的调用次数在 15 之下时，采用本地实现；
+     * 当达到 15 时，便开始动态生成字节码，并将委派实现的委派对象切换至动态实现，这个过程我们称之为 Inflation。
+     **/
+    public static void testcase4() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class klass = Class.forName("Test");
+        Method method = klass.getMethod("target", int.class);
+        for (int i = 0; i < 20; i++) {
+            method.invoke(null, i);
+        }
+    }
+
+
     public static void showEmptyLine() {
         System.out.println("\n");
     }
