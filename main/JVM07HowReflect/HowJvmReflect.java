@@ -85,6 +85,14 @@ public class HowJvmReflect {
      * 考虑到许多反射调用仅会执行一次，Java 虚拟机设置了一个阈值 15（可以通过 -Dsun.reflect.inflationThreshold= 来调整），
      * 当某个反射调用的调用次数在 15 之下时，采用本地实现；
      * 当达到 15 时，便开始动态生成字节码，并将委派实现的委派对象切换至动态实现，这个过程我们称之为 Inflation。
+     *
+     * -verbose:class
+     *
+     * 可以看到，在第 15 次（从 0 开始数）反射调用时，我们便触发了动态实现的生成。
+     * 这时候，Java 虚拟机额外加载了不少类。其中，最重要的当属 GeneratedMethodAccessor1。
+     * 并且，从第 16 次反射调用开始，我们便切换至这个刚刚生成的动态实现（第 40 行）
+     * 。反射调用的 Inflation 机制是可以通过参数（-Dsun.reflect.noInflation=true）来关闭的。
+     * 这样一来，在反射调用一开始便会直接生成动态实现，而不会使用委派实现或者本地实现。
      **/
     public static void testcase4() throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Class klass = Class.forName("Test");
