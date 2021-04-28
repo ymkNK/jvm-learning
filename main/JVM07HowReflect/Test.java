@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
  * Created by Yangmingkai on 2021/4/27.
  */
 public class Test {
-    public static void target1(int i) {
+    private static void target1(int i) {
     }
 
     public static void target2(int i) {

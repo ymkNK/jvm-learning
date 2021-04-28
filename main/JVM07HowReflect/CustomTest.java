@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /**
  * Created by Yangmingkai on 2021/4/26.
  */
@@ -6,7 +8,8 @@ public class CustomTest {
         System.out.println("this is a private method in Test.class");
     }
     public void testPublic(){
-        System.out.println("this is a public method in Test.class");
+        Random random = new Random();
+        random.nextInt();
     }
 
     private int privateValue = 1;

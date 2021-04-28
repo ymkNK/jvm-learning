@@ -47,24 +47,26 @@ public class TestCase {
     public static void testcase2() throws InvocationTargetException, NoSuchMethodException, IllegalAccessException {
         System.out.println("===case 2===");
         CustomTest customTest = new CustomTest();
-        int invokeTimes = 100000;
+        int invokeTimes = 1000000;
+        Method privateMethod = CustomTest.class.getDeclaredMethod("testPublic");
+        privateMethod.setAccessible(true);
+        for (int i = 0; i < invokeTimes; i++) {
+            privateMethod.invoke(customTest);
+        }
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < invokeTimes; i++) {
-            customTest.testPublic();
+            privateMethod.invoke(customTest);
         }
         long publicConsumeTime = System.currentTimeMillis() - startTime;
 
-        Method privateMethod = CustomTest.class.getDeclaredMethod("testPrivate");
-        privateMethod.setAccessible(true);
         startTime = System.currentTimeMillis();
         for (int i = 0; i < invokeTimes; i++) {
             customTest.testPublic();
-            privateMethod.invoke(customTest);
         }
         long privateConsumeTime = System.currentTimeMillis() - startTime;
 
-        System.out.println("直接调用耗时:" + publicConsumeTime + "ms");
-        System.out.println("反射调用耗时:" + privateConsumeTime + "ms");
+        System.out.println("反射调用耗时:" + publicConsumeTime + "ms");
+        System.out.println("直接调用耗时:" + privateConsumeTime + "ms");
     }
 
     /**
@@ -228,12 +230,11 @@ public class TestCase {
      **/
     public static void testcase10() throws NoSuchMethodException {
 
-        Method method1 = Test.class.getMethod("target1", int.class);
-        Method method2 = Test.class.getMethod("target2", int.class);
+        Method method1 = Test.class.getDeclaredMethod("target1", int.class);
+        Method method2 = Test.class.getDeclaredMethod("target1", int.class);
+        method2.setAccessible(true);
         System.out.println("'method1 == method2' is:" + (method1 == method2));
-        Method method3 = Test.class.getMethod("targetEmpty", int.class);
-        Method method4 = Test.class.getMethod("targetEmpty", int.class);
-        System.out.println("'method3 == method4' is:" + (method3 == method4));
+        System.out.println("'method3 equals method4' is:" + (method1.equals(method2)));
     }
 
     public static void showEmptyLine() {
